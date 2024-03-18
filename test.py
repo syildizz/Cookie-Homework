@@ -79,7 +79,7 @@ if __name__ == "__main__":
     #    print(task)
 
     test_task_list: RequestTaskList = RequestTaskList([RequestTask(**dict(test_task)) for test_task in test_tasks])
-    task_tree = TaskNodeTree(test_task_list)
+    task_tree: TaskNodeTree = TaskNodeTree(test_task_list)
     task_tree_results = task_tree.calculate_times()
     print()
     print()

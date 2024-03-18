@@ -36,16 +36,16 @@ class RequestTaskList(RootModel[RequestTask]):
 
 class TaskNode:
     def __init__(self, name: str, time: int, parallelizable: bool, depends: Set[str]):
-        self.name = name
-        self.time = time
-        self.init_time = time
-        self.parallelizable = parallelizable
-        self.depends = depends
+        self.name: str = name
+        self.time: int = time
+        self.init_time: int = time
+        self.parallelizable: bool = parallelizable
+        self.depends: Set[str] = depends
 
     def __str__(self) -> str:
         return self.name
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.name
 
 class TaskNodeTree:
