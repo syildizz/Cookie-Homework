@@ -1,0 +1,33 @@
+
+/* Author: Saygın Efe Yıldız */
+
+body {
+    background-color: #e7e9eb;
+}
+
+input, label {
+    display: block;
+    margin: 5px 0;
+}
+
+footer {
+    width: 100%;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.task-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#submit_server_button, #test_default_button {
+    display: block;
+    margin: 5px 0;
+    width: 100%;
+}
+
+.container{
+    margin: auto;
+    width: 40%;
+}
