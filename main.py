@@ -26,12 +26,34 @@ class RequestTaskList(RootModel[RequestTask]):
     root: List[RequestTask]
 
     @field_validator('root')
-    @classmethod
-    def all_names_must_be_unique(cls, root: List[RequestTask]):
+    @staticmethod
+    def all_names_must_be_unique(root: List[RequestTask]):
         request_names = [request_task.name for request_task in root]
     
-        if len(request_names) != len(set(request_names)):
-            raise ValueError("The tasks are not unique")
+        #https://stackoverflow.com/a/9835819
+        seen = set()
+        duplicate_tasks = set(x for x in request_names if x in seen or seen.add(x))
+        if duplicate_tasks:
+            if len(duplicate_tasks) > 1:
+                raise ValueError(f'The tasks {duplicate_tasks} are not unique')
+            else:
+                raise ValueError(f'The task {duplicate_tasks} is not unique')
+        return root
+
+    @field_validator('root')
+    @staticmethod
+    def dependencies_must_point_to_real_tasks(root: List[RequestTask]):
+        request_names = [request_task.name for request_task in root]
+        request_depends = [request_task.depends for request_task in root]
+        error_tasks = set()
+        for request_depend in request_depends:
+            if not request_depend.issubset(request_names):
+                [error_tasks.add(rd) for rd in request_depend if rd not in request_names]
+        if error_tasks:
+            if len(error_tasks) > 1:
+                raise ValueError(f'The "dependencies" {error_tasks} are not real tasks.')
+            else:
+                raise ValueError(f'The dependency {error_tasks} is not a real task.')
         return root
 
 class TaskNode:
