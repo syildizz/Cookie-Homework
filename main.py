@@ -4,6 +4,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, RootModel, field_validator, ValidationError
+from pydantic.types import PositiveInt
 from typing import List, Set, Dict
 
 app = FastAPI()
@@ -18,7 +19,7 @@ app.add_middleware(
 
 class RequestTask(BaseModel):
     name: str
-    time: int
+    time: PositiveInt
     parallelizable: bool
     depends: Set[str]
 
