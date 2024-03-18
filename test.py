@@ -1,3 +1,6 @@
+
+"""Author: Saygın Efe Yıldız"""
+
 from main import RequestTask, RequestTaskList, TaskNodeTree
 from typing import Set
 
