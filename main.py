@@ -3,7 +3,7 @@
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, RootModel, validator, ValidationError
+from pydantic import BaseModel, RootModel, field_validator, ValidationError
 from typing import List, Set, Dict
 
 app = FastAPI()
@@ -25,7 +25,8 @@ class RequestTask(BaseModel):
 class RequestTaskList(RootModel[RequestTask]):
     root: List[RequestTask]
 
-    @validator('root')
+    @field_validator('root')
+    @classmethod
     def all_names_must_be_unique(cls, root: List[RequestTask]):
         request_names = [request_task.name for request_task in root]
     
