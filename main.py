@@ -20,30 +20,39 @@ class RequestTask(BaseModel):
     name: str
     time: int
     parallelizable: bool
-    depends: List[str]
+    depends: Set[str]
 
 class RequestTaskList(RootModel[RequestTask]):
     root: List[RequestTask]
 
-class TaskNode():
-    def __init__(self, name: str, time: int, parallelizable: bool, depends_name: Set[str]):
+class TaskNode:
+    def __init__(self, name: str, time: int, parallelizable: bool, depends: Set[str]):
         self.name = name
         self.time = time
         self.init_time = time
         self.parallelizable = parallelizable
-        self.depends_name = depends_name
+        self.depends = depends
 
-    @classmethod
-    def from_request_task(cls, task: RequestTask):
-        return cls(task.name, task.time, task.parallelizable, set(task.depends))
+    def __str__(self) -> str:
+        return self.name
+    
+    def __repr__(self):
+        return self.name
 
-    @staticmethod
-    def calculate_times(task_node_tree: List["TaskNode"]) -> Dict[str, int]:
+class TaskNodeTree:
+    def __init__(self, request_task_list: RequestTaskList):
+        self.tasks: List[TaskNode] = self.__from_request_task_list(request_task_list)
+        #TODO: Validate the tasks are in fact valid and that there are no duplicated and that etc.
+
+    def __from_request_task_list(self, request_task_list: RequestTaskList) -> List[TaskNode]:
+        return [TaskNode(**dict(request_task)) for request_task in request_task_list.root]
+
+    def calculate_times(self) -> Dict[str, int]:
         time = 0
         dtime = 0
         calculated_dict = {}
         #Get leaf nodes
-        working_list = [task for task in task_node_tree if task.depends_name == set()]
+        working_list = [task for task in self.tasks if task.depends == set()]
         while working_list != []:
             working_list.sort(key=lambda t: t.time)
 
@@ -57,8 +66,8 @@ class TaskNode():
             if shortest_task in working_list:
                 working_list.remove(shortest_task)
 
-            if shortest_task in task_node_tree:
-                task_node_tree.remove(shortest_task)
+            if shortest_task in self.tasks:
+                self.tasks.remove(shortest_task)
 
             dtime = shortest_task.time
             time += dtime
@@ -69,24 +78,20 @@ class TaskNode():
             if shortest_task.parallelizable and len(not_parallelizable_tasks) > 0:
                 not_parallelizable_tasks[0].time -= dtime
             
-            for task in task_node_tree:
+            for task in self.tasks:
                 print(f"Task:  {task}")
                 print(f"Calculated:            {set(calculated_dict.keys())}")
-                print(f"Dependencies of task:  {task.depends_name}")
-                if task.depends_name != set() and task.depends_name.issubset(set(calculated_dict.keys())):
+                print(f"Dependencies of task:  {task.depends}")
+                if task.depends != set() and task.depends.issubset(set(calculated_dict.keys())):
+
                     working_list.append(task)
                     print(f"Appended: {task}")
         return calculated_dict
         
-    def __str__(self) -> str:
-        return self.name
-    
-    def __repr__(self):
-        return self.name
-
 @app.post("/")
 async def root(tasks: RequestTaskList) -> Dict[str, int]:
-    task_tree = TaskNode.calculate_times([TaskNode.from_request_task(task) for task in tasks.root])
+    task_tree: TaskNodeTree = TaskNodeTree(tasks)
+    calculated_times = task_tree.calculate_times()
     print(tasks)
     print(task_tree)
-    return task_tree
+    return calculated_times

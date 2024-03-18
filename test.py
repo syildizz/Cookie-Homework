@@ -1,4 +1,4 @@
-from main import RequestTask, TaskNode
+from main import RequestTask, RequestTaskList, TaskNodeTree
 from typing import Set
 
 test_tasks = [
@@ -78,10 +78,13 @@ if __name__ == "__main__":
     #for task in tasks:
     #    print(task)
 
-    task_tree = TaskNode.calculate_times([TaskNode.from_request_task(task) for task in test_tasks]) #type: ignore
+    req_task_list: RequestTaskList = RequestTaskList([RequestTask(**dict(test_task)) for test_task in test_tasks])
+    task_tree = TaskNodeTree(req_task_list)
+    task_tree_results = task_tree.calculate_times()
     print()
     print()
     print()
-    assert task_tree == test_results, "The correct solution is not provided!"
-    for task in task_tree.items():
+    print(task_tree_results)
+    for task in task_tree_results.items():
         print(task)
+    assert task_tree_results == test_results, "The correct solution is not provided!"
