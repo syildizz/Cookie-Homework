@@ -3,8 +3,8 @@
 
 ## Problem Definition
 
-Cookie Homework is the voluntary assignment given by [Bora Canbula](https://github.com/canbula) for the Parallel Programming course in the Fall Semestre of 2023-2024. 
-To demonstrate the cookie homework, [Bora Canbula](https://github.com/canbula) built the website [Cookie Baker](https://canbula.com/cookie).
+Cookie Homework is the voluntary assignment given by [Bora Canbula](https://github.com/canbula) for the [Parallel Programming course](https://github.com/syildizz/ParallelProgrammingCBU) in the Fall Semestre of 2023-2024. 
+To demonstrate the cookie homework, [Bora Canbula](https://github.com/canbula) built the website [Cookie Baker](https://canbula.com/cookie) as a part of the [course](https://github.com/syildizz/ParallelProgrammingCBU/tree/master/Week04/cookie-baker).
 
 The [Cookie Baker](https://canbula.com/cookie) website is a simple simulation of a cookie baking recipe which is used as a demonstration for parallel programming. 
 Just like tasks and processes, 
